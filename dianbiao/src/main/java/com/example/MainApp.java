@@ -64,6 +64,7 @@ public class MainApp {
         String logFile=homepath+"log.txt";
         String bzhmcConfig=homepath+"configPid.txt";
         String ipysConfig=homepath+"configIp.txt";
+//        String config=homepath+"config.txt";
 
         Path path = Paths.get(logFile);
         if (Files.exists(path)) {
@@ -72,12 +73,13 @@ public class MainApp {
 
         Map<String,String> bzhmcConfigMap= getMap(bzhmcConfig);
         Map<String,String> ipysConfigMap= getMap(ipysConfig);
+//        Map<String,String> configMap = getMap(config);
 
 
 
 
         logWriter = new FileWriter(logFile);
-        readExcelFile(zb,0,bzhmcConfigMap,ipysConfigMap);
+        readExcelFile(zb,0,bzhmcConfigMap, ipysConfigMap);
         logWriter.close();
 
     }
