@@ -84,12 +84,39 @@ public class DbUtil {
     }
     /**
      * 生成标准化名称
-     * @param bzhname
-     * @param bzhmc
-     * @param bzhmchz
+     * @param bzhname 原名称
+     * @param bzhmc 结果
+     * @param bzhmchz 后缀
      * @return
      */
     public static String bzhmcsc(String bzhname,String bzhmc,String bzhmchz) {
+
+
+        Pattern jh = Pattern.compile("\\d+#");
+        Matcher matcherJh = jh.matcher(bzhname);
+        String numJh="";
+        if(matcherJh.find()){
+            numJh=matcherJh.group();
+
+            String[] strarr=bzhname.split(numJh);
+            bzhmchz="_"+numJh.substring(0,numJh.length()-1);
+
+            String qz=bzhmchz+strarr[1];
+            String zw=bzhmchz+strarr[2];
+
+//            Pattern rgkb = Pattern.compile("\\s+");
+//            Matcher matcherrgkb = rgkb.matcher(qz);
+//
+//            if(matcherJh.find()){
+//                numJh=matcherrgkb.group();
+//            }
+
+            qz=ChineseToPinyin.getPinyinInitial(qz.replace(" ",""));
+            bzhmchz="_"+qz+bzhmchz;
+        }
+
+
+
         if(bzhname.contains("#")){
             int starNUm=2;
             if(!bzhname.contains("机组")){
