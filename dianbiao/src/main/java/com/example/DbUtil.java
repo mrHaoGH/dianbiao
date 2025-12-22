@@ -1,8 +1,126 @@
 package com.example;
 
-public class Bzhmcsc {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+public class DbUtil {
+    /**
+     * 属性标识
+     * @param cell1
+     * @param cell3
+     * @param cell5
+     * @param sheetName
+     * @param rowNum
+     * @return
+     */
+    public static String sxbs(String cell1,String cell3,String cell5,String sheetName,int rowNum) {
+
+
+        String result="";
+        if (cell3.substring(0,2).contains("DB")) {
+            String sss=cell3;
+            String thf="";
+            if(cell5.contains("布")){
+                thf="X";
+            } else if (cell5.contains("浮")) {
+                thf="R";
+            }else{
+                thf="I";
+            }
+            if (sss.contains("DBD")){
+                result=sss.replace("DBD",thf);
+            }else if(sss.contains("DBW")){
+                result=sss.replace("DBW",thf);
+            }else {
+                return "-1";
+            }
+
+
+        }else{
+            Pattern pattern1 = Pattern.compile("\\d+(\\.\\d+)?$");
+            Matcher matcher1 = pattern1.matcher(cell3);
+            if(matcher1.find()) {
+                result = matcher1.group();
+                String resulthz = "";
+                if (result.contains(".")) {
+                    String[] resultArr = result.split("\\.");
+                    result = resultArr[0];
+                    resulthz = "#" + resultArr[1];
+                }
+                if (4 - result.length() == 1) {
+                    result = "0" + result;
+                } else if (4 - result.length() == 2) {
+                    result = "00" + result;
+                } else if (4 - result.length() == 3) {
+                    result = "000" + result;
+                }
+
+                if (cell5.contains("整") || cell5.contains("浮点")) {
+                    if (cell5.contains("整形")) {
+                        result = result + ":UINT";
+                    } else {
+                        result = result + ":REAL";
+                    }
+                    result = "4x" + result;
+                } else if (cell5.contains("布尔")) {
+                    result = result + ":BOOL";
+                    Pattern pattern2 = Pattern.compile("(启动|停止|启|停|启停|停启)$");
+                    Matcher matcher2 = pattern2.matcher(cell1);
+                    if (matcher2.find()) {
+                        result = "0x" + result;
+                    } else {
+                        result = "1x" + result;
+                    }
+                }
+                result = result + resulthz;
+            }else{
+                return "-1";
+            }
+        }
+
+
+        return result;
+
+    }
+    /**
+     * 生成标准化名称
+     * @param bzhname
+     * @param bzhmc
+     * @param bzhmchz
+     * @return
+     */
     public static String bzhmcsc(String bzhname,String bzhmc,String bzhmchz) {
+        if(bzhname.contains("#")){
+            int starNUm=2;
+            if(!bzhname.contains("机组")){
+                starNUm=0;
+            }
+            bzhmchz="_"+bzhname.substring(starNUm,bzhname.indexOf("#"));
+            bzhname=bzhname.substring(bzhname.indexOf("#")+1,bzhname.length());
+        } else if (bzhname.contains("_")) {
+            int starNUm=2;
+            if(!bzhname.contains("机组")){
+                starNUm=0;
+            }
+            bzhmchz="_"+bzhname.substring(starNUm,bzhname.indexOf("_"));
+            bzhname=bzhname.substring(bzhname.indexOf("_")+1,bzhname.length());
+        }else if (bzhname.contains("机组")) {
+            Pattern pattern2 = Pattern.compile("机组\\d+");
+            Matcher matcher2 = pattern2.matcher(bzhname);
+            String bzhnamejznum="";
+            if(matcher2.find()){
+                bzhnamejznum=matcher2.group();
+            }
+            bzhmchz="_"+bzhnamejznum.substring(2,bzhnamejznum.length());
+            bzhname=bzhname.replace(bzhnamejznum,"");
+        }
+        if(bzhname.contains("：")){
+            bzhname=bzhname.substring(0,bzhname.indexOf("："));
+        }
+
+
+
+
         if(bzhname.contains("泵")){
             if (bzhname.contains("频率")){
                 if (bzhname.contains("二次")||bzhname.contains("二网")||bzhname.contains("循环")||bzhname.contains("二环")||bzhname.contains("二段")){
