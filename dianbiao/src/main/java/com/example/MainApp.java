@@ -42,7 +42,7 @@ public class MainApp {
 
         int lastzx=jarPath.lastIndexOf("/");
         homepath=jarPath.substring(0,lastzx+1);
-        System.out.println(homepath);
+        homepath="D:/test/";
 
         String zb=homepath+"zb.xlsx";
         String logFile=homepath+"log.txt";
@@ -189,6 +189,7 @@ public class MainApp {
         }else{
 
             logWriter.write("\n---------------生成点表-------------------");
+            List<Object[]> bzhmclist  = new ArrayList<>();//测试标准化名称判断情况
             for  (int i = 1; i < workbook.getNumberOfSheets(); i++) {//获取每个Sheet表
 
                 Sheet sheet = workbook.getSheetAt(i);
@@ -199,6 +200,8 @@ public class MainApp {
                 Map<String,Integer> bzhmcMap=new HashMap<>();//标准化名称重复改名
                 logWriter.write("\n生成点表:"+sheetName);
                 int flag=0;
+
+                Object[] bzhmctest= new Object[38];
                 for (Row row : sheet) {
                     int rowNum=row.getRowNum();
                     if (rowNum<2){
@@ -213,7 +216,8 @@ public class MainApp {
                     String cell7= String.valueOf(row.getCell(7));//单位
 
 
-                    if (!cell3.contains("Holding_register")&&!cell3.contains("DB")) {
+                    if (!cell3.contains("Holding_register")&&!cell3.contains("DB")&&!cell3.contains("V")&&
+                            !cell3.contains("I")&&!cell3.contains("Q")&&!cell3.contains("M")) {
                         flag=1;
                         continue;
                     }
@@ -224,12 +228,12 @@ public class MainApp {
                     }
                     biaoshiSet.add(cell3);
                     //属性标识
+
                     String result=DbUtil.sxbs(cell1,cell3,cell5,sheetName,rowNum);
                     if("-1".equals(result)){
                         logWriter.write("\n异常:"+sheetName+" "+rowNum+" 行 mudbus地址异常跳过："+cell3);
                         continue;
                     }
-
                     //属性名称
                     String attrName=cell1;
 
@@ -238,7 +242,7 @@ public class MainApp {
                     String bzhmc="";
                     String bzhmchz="";//后缀
 
-                    bzhmc= DbUtil.bzhmcsc(bzhname,bzhmc,bzhmchz);
+                    bzhmc= DbUtil.bzhmcsc(bzhname,bzhmc,bzhmchz,bzhmctest);
 
                     //读写模式
                     String dxms=cell4.equals("只读")?"1":"2";
@@ -286,13 +290,17 @@ public class MainApp {
                     //上报公式
                     objects[6]=jsgs;
                     //操作模式
-                    objects[12]="U";
+//                    objects[12]="D";
                     //下发公式
                     if ("2".equals(dxms)) {
                         objects[14]=jsgs;
                     }
                     data.add(objects);
                 }
+
+
+                bzhmclist.add(bzhmctest);
+
                 if (flag==1){
                     logWriter.write("\n异常:"+sheetName+" 内有需要人工查询的物模型属性");
                 }
@@ -311,6 +319,7 @@ public class MainApp {
                     createExcelFile(dbfile.getPath(),data,"db");
                 }
             }
+            createExcelFile(homepath+"test.xlsx",bzhmclist,"test");
         }
         workbook.close();
         inputStream.close();
@@ -325,13 +334,15 @@ public class MainApp {
         Workbook workbook = new XSSFWorkbook();
 
         // 创建工作表
-        Sheet sheet;
+        Sheet sheet = null;
         if ("db".equals(type)) {
             sheet = workbook.createSheet("设备类属性信息");
         } else if ("sb".equals(type)) {
             sheet = workbook.createSheet("设备信息");
-        }else {
+        }else if("sbl".equals(type)){
             sheet = workbook.createSheet("设备模板信息");
+        }else if("test".equals(type)){
+            sheet = workbook.createSheet("test");
         }
 
 
@@ -350,8 +361,14 @@ public class MainApp {
             headers = new String[]{"属性ID", "属性标识", "属性名称", "标准化名称", "读写模式", "单位", "计算公式", "数据类型", "排列顺序", "模式", "默认值", "时间格式", "操作标识", "数据上报", "控制计算公式"};
         } else if ("sb".equals(type)) {
             headers = new String[]{"设备ID","设备标识","设备名称","位置信息ID","部门信息ID","设备类ID","设备类标识","网关设备ID","网关设备标识","被组合设备ID","被组合设备标识","标准化名称","技术参数","操作标记"};
-        }else{
+        }else if("sbl".equals(type)){
             headers = new String[]{"设备类ID","设备类标识","设备类名称","通讯协议","通讯类型","继承父模板ID","继承父模板标识","时间格式","jsonQuery","被组合设备类ID","被组合设备类标识","属性ID","属性标识","设备类分组ID","标准化名称","操作标记","认证方式","clientId","username","password"};
+        }else if("test".equals(type)){
+            headers = new String[]{"一次供温","一次回温","一次供压","一次回压","压差","一次瞬时供水流量","一次瞬时回水流量","一次瞬时流量",
+                    "一次瞬时供水热量","一次瞬时回水热量","一次瞬时热量","累计供水热量","累计回水热量","累计热量","累计供水流量","累计回水流量","累计流量",
+                    "二次1区供压","二次1区回压","二次1区供温","二次1区设定供温","二次1区回温","二次供回水压差","二次1区瞬时流量","二次1区瞬时热量","二次1区累计热量","二次1区累计流量",
+                    "调节阀开度","调节阀开度给定","调节阀手自动","循环泵频率","循环泵频率给定","循环泵频率反馈","补水泵频率","补水泵频率给定",
+                    "补水泵频率反馈","循环泵电流","补水泵电流"};
         }
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
