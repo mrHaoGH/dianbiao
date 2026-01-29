@@ -3,6 +3,7 @@ package com.example;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -11,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ExcelUtil {
     public static Workbook  getWorkbook(String filePath) throws IOException {
@@ -194,5 +197,104 @@ public class ExcelUtil {
                 allFileList.add(file);
             }
         }
+    }
+    /**
+     * 替换字符串中符合"一个或两个大写字母+整数"模式的数字部分
+     * @param input 原始字符串
+     * @param replacement 要替换成的整数
+     * @return 替换后的字符串
+     */
+    public static String replacePatternNumbers(String input, int replacement) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        // 正则表达式：匹配1-2个大写字母后跟一个或多个数字
+        // ([A-Z]{1,2}) 匹配1-2个大写字母（第1组）
+        // (\d+) 匹配一个或多个数字（第2组）
+        Pattern pattern = Pattern.compile("([A-Z]{1,2})(\\d+)");
+        Matcher matcher = pattern.matcher(input);
+
+        // 使用StringBuilder构建结果
+        StringBuilder result = new StringBuilder();
+        int lastEnd = 0;
+
+        while (matcher.find()) {
+            // 添加匹配前的部分
+            result.append(input, lastEnd, matcher.start());
+
+            // 获取匹配到的字母部分
+            String letters = matcher.group(1);
+
+            // 构建替换后的字符串：字母 + 新的数字
+            result.append(letters).append(replacement);
+
+            // 更新最后处理的位置
+            lastEnd = matcher.end();
+        }
+
+        // 添加剩余部分
+        if (lastEnd < input.length()) {
+            result.append(input, lastEnd, input.length());
+        }
+
+        return result.toString();
+    }
+    /**
+     * 获取合并单元格的值
+     * @param sheet
+     * @param row
+     * @param column
+     * @return
+     */
+    public static String getMergedRegionValue(Sheet sheet ,int row , int column){
+        int sheetMergeCount = sheet.getNumMergedRegions();
+
+        for(int i = 0 ; i < sheetMergeCount ; i++){
+            CellRangeAddress ca = sheet.getMergedRegion(i);
+            int firstColumn = ca.getFirstColumn();
+            int lastColumn = ca.getLastColumn();
+            int firstRow = ca.getFirstRow();
+            int lastRow = ca.getLastRow();
+
+            if(row >= firstRow && row <= lastRow){
+
+                if(column >= firstColumn && column <= lastColumn){
+                    Row fRow = sheet.getRow(firstRow);
+                    Cell fCell = fRow.getCell(firstColumn);
+                    return getCellValue(fCell) ;
+                }
+            }
+        }
+
+        return null ;
+    }
+    /**
+     * 获取单元格的值
+     * @param cell
+     * @return
+     */
+    public static String getCellValue(Cell cell){
+
+        if(cell == null) return "";
+
+        if(cell.getCellType() == CellType.STRING){
+
+            return cell.getStringCellValue();
+
+        }else if(cell.getCellType() == CellType.BOOLEAN){
+
+            return String.valueOf(cell.getBooleanCellValue());
+
+        }else if(cell.getCellType() == CellType.FORMULA){
+
+            return cell.getCellFormula() ;
+
+        }else if(cell.getCellType() == CellType.NUMERIC){
+
+            return String.valueOf(cell.getNumericCellValue());
+
+        }
+        return "";
     }
 }

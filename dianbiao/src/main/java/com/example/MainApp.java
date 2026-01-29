@@ -1,8 +1,11 @@
 package com.example;
 
 
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
+import javax.print.DocFlavor;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -54,15 +57,24 @@ public class MainApp {
         List<String> mobanList = new ArrayList<>();
 
         Map<String, String> pkmap=getMap(homepath+"pk.txt");
+        Map<String, String> dbgbmap=getMap(homepath+"dbgb.txt");
 
+        List<String> zzkp=new ArrayList<>();
+        zzkp.add("黑龙江省建兴勘察工程有限公司");
+        zzkp.add("黑龙江省第一水文地质工程地质勘察院有限公司");
+        zzkp.add("黑龙江省水文地质工程地质勘察院有限公司");
+        zzkp.add("黑龙江迅恒地质环境工程咨询有限公司");
+        zzkp.add("黑龙江省宏泰矿业开发有限公司");
         Map<Integer,String> mobanteshucl_gd = new HashMap<>();
+
+        Map<Integer,CellType> mobanteshucl_gd_cellType = new HashMap<>();
         Map<String,Integer> jsyn= new HashMap<>();
 
         Map<String,Integer> mapXy2Index = new HashMap<>();
-        Map<String,String> mapXy2Gs = new HashMap<>();
+        Map<Integer,String> mapXy2Gs = new HashMap<>();
         Row mbrow = sheet.getRow(0);
         Row xyrow = sheet.getRow(1);
-//        Row gsrow = sheet.getRow(2);
+        Row gsrow = sheet.getRow(2);
         int index=0;
         while(mbrow.getCell(index)!=null) {
             String mbStr = mbrow.getCell(index).getStringCellValue();
@@ -73,41 +85,20 @@ public class MainApp {
 
             }
 
-//            if(gsrow.getCell(index).getCellType()==CellType.FORMULA){
-//                Cell gsCall=gsrow.getCell(index);
-//                String formula = gsCall.getCellFormula();
-////
-////                // 进行计算并拿到值
-////                CellValue value = formulaEvaluator.evaluate(gsCall);
-////                // 将值转化成字符串
-////                String format = value.formatAsString();
-//                mapXy2Gs.put(xyStr,formula);
-//            }
+            if(gsrow.getCell(index)!=null) {
+                if(gsrow.getCell(index).getCellType()==CellType.FORMULA){
+                Cell gsCall=gsrow.getCell(index);
+                String formula = gsCall.getCellFormula();
 
-            if(mbStr.contains("原币币种")){
-                mobanteshucl_gd.put(index,"CNY");
+                    mapXy2Gs.put(index,formula);
+                }else if(gsrow.getCell(index).getCellType()!=CellType.BLANK){
+                    Cell fkCall=gsrow.getCell(index);
+                    String cellStr= String.valueOf(fkCall);
+                    mobanteshucl_gd.put(index,cellStr);
+                    mobanteshucl_gd_cellType.put(index,gsrow.getCell(index).getCellType());
+                }
             }
-            if(mbStr.contains("建卡日期")){
-                mobanteshucl_gd.put(index,"2025-12-31");
-            }
-            if(mbStr.contains("本币汇率类型编码")){
-                mobanteshucl_gd.put(index,"01");
-            }
-            if(mbStr.contains("本币本年减值")){
-                mobanteshucl_gd.put(index,"0");
-            }
-            if(mbStr.contains("分摊比例")){
-                mobanteshucl_gd.put(index,"100");
-            }
-            if(mbStr.contains("本币累计减值")){
-                mobanteshucl_gd.put(index,"0");
-            }
-            if(mbStr.contains("月限")){
-                jsyn.put("月限",index);
-            }
-            if(mbStr.contains("年限")){
-                jsyn.put("年限",index);
-            }
+
             mobanList.add(mbStr);
 
 
@@ -127,99 +118,97 @@ public class MainApp {
         ExcelUtil.getAllFile(dir, allFileList);
         for (File file : allFileList) {
             Workbook workbook2 = ExcelUtil.getWorkbook(file.getPath());
+            // 拿到计算公式
+            FormulaEvaluator formulaEvaluator = workbook2.getCreationHelper().createFormulaEvaluator();
             Sheet sheet2 = workbook2.getSheetAt(0);
+            String zzmc=ExcelUtil.getMergedRegionValue(sheet2,1,5);
+
+
             List<Object[]> data = new ArrayList<>();//新建excel使用
             List<CellType[]> celltypeList = new ArrayList<>();
             List<Integer> order = new ArrayList<>();
-            List<Integer> teshuchul_erhy = new ArrayList<>();//新建excel使用
-            Integer nianyueIndex = 0;//新建excel使用
-            List<Integer> mj_erhy = new ArrayList<>();//新建excel使用
-//            List<String> order2 = new ArrayList<>();
+            Integer[] dbgbArr=new Integer[3];
 
             Row firstRow=sheet2.getRow(3);
             for(Cell cell:firstRow){
                 String xyStr2=cell.getStringCellValue();
                 Integer num=mapXy2Index.get(xyStr2);
-                if(xyStr2.contains("面积")){
-                    mj_erhy.add(cell.getColumnIndex());
+                if(xyStr2.equals("地标")){
+                    dbgbArr[0]=cell.getColumnIndex();
                 }
-                if(xyStr2.contains("数量")){
-                    teshuchul_erhy.add(cell.getColumnIndex());
+                if(xyStr2.equals("国标")){
+                    dbgbArr[1]=cell.getColumnIndex();
                 }
-                if(xyStr2.contains("使用月限")){
-                    nianyueIndex=cell.getColumnIndex();
+                if(xyStr2.equals("卡片编码")){
+                    dbgbArr[2]=cell.getColumnIndex();
                 }
-//                String gsVal=mapXy2Gs.get(xyStr2);
-//                order2.add("");
-//                if(gsVal!=null){
-//                    order2.add(gsVal);
-//                }
                 order.add(num);
             }
+
             for (Row row : sheet2) {
                 if (row.getRowNum() < 4) {
                     continue;
                 }
+                if(Objects.equals(String.valueOf(row.getCell(0)), "合计")){
+                    break;
+                }
+
                 Object[] obj = new Object[size];
                 CellType[] cellTypes = new CellType[size];
-//                int yu = 0;
-//                float nianyuenum2=0;
-//                int y = 0;
-//                int n = 0;
-//                int nianyuenum = 0;
-//                if (row.getCell(nianyueIndex) != null&&String.valueOf(row.getCell(nianyueIndex))!= "") {
-//                     nianyuenum2 = Float.valueOf(String.valueOf(row.getCell(nianyueIndex)));
-//                     nianyuenum = (int) nianyuenum2;
-//                    yu = nianyuenum % 12;
-//                    y = jsyn.get("月限");
-//                    n = jsyn.get("年限");
-//                }
 
 
-                
-//                if (yu != 0) {
-//                    obj[y] = 0;
-//                    obj[n] = nianyuenum / 12;
-//                    cellTypes[y] = row.getCell(nianyueIndex).getCellType();
-//                    cellTypes[n] = row.getCell(nianyueIndex).getCellType();
-//                } else {
-//                    obj[y] = yu;
-//                    obj[n] = nianyuenum / 12;
-//                    cellTypes[y] = row.getCell(nianyueIndex).getCellType();
-//                    cellTypes[n] = row.getCell(nianyueIndex).getCellType();
-//                }
+
+
+                for (Integer key : mapXy2Gs.keySet()) {
+                    int dosomecellnum=row.getLastCellNum()+1;
+                    int rowNum=row.getRowNum();
+                    Cell fCell=row.createCell(dosomecellnum);
+                    String re=ExcelUtil.replacePatternNumbers(mapXy2Gs.get(key),rowNum+1);
+                    fCell.setCellFormula(re);
+                    // 进行计算并拿到值
+                    CellValue value = formulaEvaluator.evaluate(fCell);
+                    // 将值转化成字符串
+                    String format = value.formatAsString();
+                    format=format.replace("\"","");
+                    row.removeCell(fCell);
+                    obj[key] = format;
+                    cellTypes[key] = CellType.NUMERIC;
+                }
+
                 for (Cell cell : row) {
-                    if (order.get(cell.getColumnIndex()) == null) {
+                    if (order.size()-1<cell.getColumnIndex()||order.get(cell.getColumnIndex()) == null) {
                         continue;
                     }
+
                     String cellStr = String.valueOf(row.getCell(cell.getColumnIndex()));
 
-//                    if (mj_erhy.contains(cell.getColumnIndex())) {
-//                        String cellStr2 = String.valueOf(row.getCell(mj_erhy.get(0)));
-//                        String cellStr3 = String.valueOf(row.getCell(mj_erhy.get(1)));
-//                        if (!cellStr2.isEmpty()) {
-//                            cellStr = cellStr2;
-//                        }
-//                        if (!cellStr3.isEmpty()) {
-//                            cellStr = cellStr3;
-//                        }
-//                    }
-//                    if (teshuchul_erhy.contains(cell.getColumnIndex())) {
-//                        String cellStr2 = String.valueOf(row.getCell(teshuchul_erhy.get(0)));
-//                        String cellStr3 = String.valueOf(row.getCell(teshuchul_erhy.get(1)));
-//                        if (!cellStr2.isEmpty()) {
-//                            cellStr = cellStr2;
-//                        }
-//                        if (!cellStr3.isEmpty()) {
-//                            cellStr = cellStr3;
-//                        }
-//                    }
-                    if (mobanteshucl_gd.get(cell.getColumnIndex()) != null) {
-                        cellStr = mobanteshucl_gd.get(cell.getColumnIndex());
+
+                    for (Integer key : mobanteshucl_gd.keySet()) {
+                        obj[key] = mobanteshucl_gd.get(key);
+                        cellTypes[key] = mobanteshucl_gd_cellType.get(key);
+                    }
+                    if(zzkp.contains(zzmc)){
+                        String keyStr="";
+                        keyStr=zzmc+"-"+row.getCell(dbgbArr[2]);
+                        String val=dbgbmap.get(keyStr);
+                        if(val!=null){
+                            String[] valarr=val.split("-");
+
+                            if(dbgbArr[0]==cell.getColumnIndex()){
+                                cellStr=valarr[0];
+                            }
+                            if(dbgbArr[1]==cell.getColumnIndex()){
+                                cellStr=valarr[1];
+                            }
+                        }
 
                     }
 
-                    obj[order.get(cell.getColumnIndex())] = cellStr;
+
+                    int mbi=order.get(cell.getColumnIndex());
+
+
+                    obj[mbi] = cellStr;
                     cellTypes[order.get(cell.getColumnIndex())] = row.getCell(cell.getColumnIndex()).getCellType();
 
                 }
