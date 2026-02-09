@@ -40,10 +40,10 @@ public class MainApp {
 
         int lastzx = jarPath.lastIndexOf("/");
         homepath = jarPath.substring(0, lastzx + 1);
-        homepath = "D:/test2/";
+        homepath = "D:/test/";
 
-//        viscadaStart();
-        yongyouStart();
+        viscadaStart();
+//        yongyouStart();
     }
 
     /**
@@ -58,6 +58,7 @@ public class MainApp {
 
         Map<String, String> pkmap=getMap(homepath+"pk.txt");
         Map<String, String> dbgbmap=getMap(homepath+"dbgb.txt");
+        Map<String, String> zclbmap=getMap(homepath+"zclb.txt");
 
         List<String> zzkp=new ArrayList<>();
         zzkp.add("黑龙江省建兴勘察工程有限公司");
@@ -127,7 +128,7 @@ public class MainApp {
             List<Object[]> data = new ArrayList<>();//新建excel使用
             List<CellType[]> celltypeList = new ArrayList<>();
             List<Integer> order = new ArrayList<>();
-            Integer[] dbgbArr=new Integer[3];
+            Integer[] dbgbArr=new Integer[4];
 
             Row firstRow=sheet2.getRow(3);
             for(Cell cell:firstRow){
@@ -141,6 +142,9 @@ public class MainApp {
                 }
                 if(xyStr2.equals("卡片编码")){
                     dbgbArr[2]=cell.getColumnIndex();
+                }
+                if(xyStr2.equals("资产类别")){
+                    dbgbArr[3]=cell.getColumnIndex();
                 }
                 order.add(num);
             }
@@ -168,11 +172,14 @@ public class MainApp {
                     // 进行计算并拿到值
                     CellValue value = formulaEvaluator.evaluate(fCell);
                     // 将值转化成字符串
+
                     String format = value.formatAsString();
+
                     format=format.replace("\"","");
+                    format=format.replace(".0","");
                     row.removeCell(fCell);
                     obj[key] = format;
-                    cellTypes[key] = CellType.NUMERIC;
+                    cellTypes[key] = CellType.STRING;
                 }
 
                 for (Cell cell : row) {
@@ -186,6 +193,14 @@ public class MainApp {
                     for (Integer key : mobanteshucl_gd.keySet()) {
                         obj[key] = mobanteshucl_gd.get(key);
                         cellTypes[key] = mobanteshucl_gd_cellType.get(key);
+                    }
+                    if(dbgbArr[3]==cell.getColumnIndex()){
+                        String newZclb=zclbmap.get(cellStr);
+                        if(newZclb==null){
+                            System.out.println(cellStr);
+                        }else {
+                            cellStr=newZclb;
+                        }
                     }
                     if(zzkp.contains(zzmc)){
                         String keyStr="";
@@ -228,7 +243,9 @@ public class MainApp {
                 }
             }
             if (!data.isEmpty()) {
+                ExcelUtil.copyFileWithNewName(homepath+"zcqcmb.xlsx",homepath + "dc/",file.getName());
                 ExcelUtil.createExcelFile(dbfile.getPath(), data, "yy",mobanList,celltypeList,pkmap,mobanteshucl_gd);
+
             }
         }
     }
@@ -444,7 +461,8 @@ public class MainApp {
                 //读写模式
                 String dxms = cell4.equals("只读") ? "1" : "2";
                 //单位
-                String danwei = cell7;
+
+                String danwei = cell7=="null" ? "" : cell7;
                 //数据类型
                 String sjlx = "";
                 if (cell5.contains("整")) {
@@ -476,21 +494,21 @@ public class MainApp {
 
                 //计算公式
                 objects[3] = bzhmc;
-                String jsgs = null;
-                if (!cell6.equals("1") && !cell6.equals("1.0")) {
-                    jsgs = "${" + bzhmc + "}*" + cell6;
-                }
+//                String jsgs = null;
+//                if (!cell6.equals("1") && !cell6.equals("1.0") && !cell6.isEmpty()) {
+//                    jsgs = "${" + bzhmc + "}*" + cell6;
+//                }
                 objects[4] = dxms;
                 objects[5] = danwei;
                 objects[7] = sjlx;
                 //上报公式
-                objects[6] = jsgs;
+//                objects[6] = jsgs;
                 //操作模式
 //                    objects[12]="D";
                 //下发公式
-                if ("2".equals(dxms)) {
-                    objects[14] = jsgs;
-                }
+//                if ("2".equals(dxms)) {
+//                    objects[14] = jsgs;
+//                }
                 data.add(objects);
             }
 

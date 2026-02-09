@@ -15,11 +15,11 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 稳定版本组合 -->
-        <poi.version>5.2.5</poi.version>
+        <poi.version>5.4.0</poi.version>
         <commons-compress.version>1.26.0</commons-compress.version>
         <commons-io.version>2.18.0</commons-io.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
-        <log4j.version>2.17.2</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
         <curvesapi.version>1.08</curvesapi.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-collections4.version>4.4</commons-collections4.version>

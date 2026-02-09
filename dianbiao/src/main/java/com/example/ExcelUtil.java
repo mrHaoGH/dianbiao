@@ -10,6 +10,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -35,8 +39,12 @@ public class ExcelUtil {
      */
     public static void createExcelFile(String filePath, List<Object[]> data, String type, List<String> list, List<CellType[]> celltypeList, Map<String, String> pkmap, Map<Integer, String> mobanteshucl_gd) throws IOException {
         // 创建工作簿 (.xlsx)
-        Workbook workbook = new XSSFWorkbook();
-        FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+        Workbook workbook=new XSSFWorkbook();
+        if ("yy".equals(type)){
+
+            workbook = getWorkbook(filePath);
+        }
+
         // 创建工作表
         Sheet sheet = null;
         if ("db".equals(type)) {
@@ -48,7 +56,7 @@ public class ExcelUtil {
         }else if("test".equals(type)){
             sheet = workbook.createSheet("test");
         }else if("yy".equals(type)){
-            sheet = workbook.createSheet("yy");
+            sheet = workbook.getSheetAt(1);
         }
 
 
@@ -78,17 +86,22 @@ public class ExcelUtil {
         }else if("yy".equals(type)){
             headers = list.toArray(new String[list.size()]);
         }
-        for (int i = 0; i < headers.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers[i]);
-            cell.setCellStyle(headerStyle);
+        int rowNum = 9;
+        if (!"yy".equals(type)){
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+            rowNum = 1;
         }
 
-        int rowNum = 1;
+
+
+
         int m=0;
         for (Object[] rowData : data) {
             Row row = sheet.createRow(rowNum++);
-            CellType[] cellTypes= celltypeList.get(m);
             for (int j = 0; j < rowData.length; j++) {
 
 
@@ -112,7 +125,8 @@ public class ExcelUtil {
 
                 if (rowData[j] != null) {
                     String numStr= rowData[j].toString();
-                    row.createCell(j,cellTypes[j]==null?CellType.STRING:cellTypes[j]).setCellValue(numStr);
+                    numStr=ExcelUtil.removeTrailingZero(numStr);
+                    row.createCell(j,CellType.STRING).setCellValue(numStr);
                 }
             }
             m++;
@@ -296,5 +310,47 @@ public class ExcelUtil {
 
         }
         return "";
+    }
+    public static String removeTrailingZero(String str) {
+        if (str != null && str.endsWith(".0")) {
+            return str.substring(0, str.length() - 2);
+        }
+        return str;
+    }
+    /**
+     * 方法2：复制文件并修改文件名（指定新文件名）
+     * @param sourcePath 源文件路径
+     * @param destDirectory 目标目录
+     * @param newFileName 新文件名（不含路径）
+     * @return 复制后的文件路径
+     */
+    public static String copyFileWithNewName(String sourcePath, String destDirectory,
+                                             String newFileName) throws IOException {
+        Path source = Paths.get(sourcePath);
+        Path destDir = Paths.get(destDirectory);
+
+        // 确保目标目录存在
+        if (!Files.exists(destDir)) {
+            Files.createDirectories(destDir);
+        }
+
+        // 获取文件扩展名
+        String originalFileName = source.getFileName().toString();
+        String extension = "";
+        int dotIndex = originalFileName.lastIndexOf('.');
+        if (dotIndex > 0) {
+            extension = originalFileName.substring(dotIndex);
+        }
+
+        // 确保新文件名包含扩展名
+        if (!newFileName.contains(".")) {
+            newFileName += extension;
+        }
+
+        // 复制文件
+        Path destination = destDir.resolve(newFileName);
+        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+
+        return destination.toString();
     }
 }
