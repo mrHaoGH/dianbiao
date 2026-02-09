@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/nft-turbo-admin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-auth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-chain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-goods/nft-turbo-box/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-goods/nft-turbo-collection/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-goods/nft-turbo-interface/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-goods/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-inventory/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-notice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-order/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-pay/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-trade/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/nft-turbo-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-business/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-check/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-base/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-cache/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-config/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-datasource/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-es/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-file/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-job/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-limiter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-lock/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-mq/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-order-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-prometheus/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-rpc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-sa-token/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-seata/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-skywalking/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-sms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-tcc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/nft-turbo-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nft-turbo-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+  </component>
+</project>

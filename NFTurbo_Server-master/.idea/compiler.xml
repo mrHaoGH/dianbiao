@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for NFTurbo" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="nft-turbo-job" />
+        <module name="nft-turbo-gateway" />
+        <module name="nft-turbo-collection" />
+        <module name="nft-turbo-mq" />
+        <module name="nft-turbo-order" />
+        <module name="nft-turbo-file" />
+        <module name="nft-turbo-seata" />
+        <module name="nft-turbo-es" />
+        <module name="nft-turbo-admin" />
+        <module name="nft-turbo-user" />
+        <module name="nft-turbo-sa-token" />
+        <module name="nft-turbo-auth" />
+        <module name="nft-turbo-pay" />
+        <module name="nft-turbo-check" />
+        <module name="nft-turbo-datasource" />
+        <module name="nft-turbo-order-client" />
+        <module name="nft-turbo-skywalking" />
+        <module name="nft-turbo-cache" />
+        <module name="nft-turbo-rpc" />
+        <module name="nft-turbo-chain" />
+        <module name="nft-turbo-limiter" />
+        <module name="nft-turbo-goods-interface" />
+        <module name="nft-turbo-inventory" />
+        <module name="nft-turbo-config" />
+        <module name="nft-turbo-api" />
+        <module name="nft-turbo-sms" />
+        <module name="nft-turbo-lock" />
+        <module name="nft-turbo-tcc" />
+        <module name="nft-turbo-web" />
+        <module name="nft-turbo-base" />
+        <module name="nft-turbo-prometheus" />
+        <module name="nft-turbo-box" />
+        <module name="nft-turbo-notice" />
+      </profile>
+      <profile name="Annotation profile for nft-turbo-app" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="nft-turbo-app" />
+      </profile>
+      <profile name="Annotation profile for nft-turbo-trade" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="nft-turbo-trade" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="NFTurbo" options="-parameters" />
+      <module name="nft-turbo-admin" options="-parameters" />
+      <module name="nft-turbo-api" options="-parameters" />
+      <module name="nft-turbo-app" options="-parameters" />
+      <module name="nft-turbo-auth" options="-parameters" />
+      <module name="nft-turbo-base" options="-parameters" />
+      <module name="nft-turbo-box" options="-parameters" />
+      <module name="nft-turbo-business" options="-parameters" />
+      <module name="nft-turbo-cache" options="-parameters" />
+      <module name="nft-turbo-chain" options="-parameters" />
+      <module name="nft-turbo-check" options="-parameters" />
+      <module name="nft-turbo-collection" options="-parameters" />
+      <module name="nft-turbo-common" options="-parameters" />
+      <module name="nft-turbo-config" options="-parameters" />
+      <module name="nft-turbo-datasource" options="-parameters" />
+      <module name="nft-turbo-es" options="-parameters" />
+      <module name="nft-turbo-file" options="-parameters" />
+      <module name="nft-turbo-gateway" options="-parameters" />
+      <module name="nft-turbo-goods" options="-parameters" />
+      <module name="nft-turbo-goods-interface" options="-parameters" />
+      <module name="nft-turbo-inventory" options="-parameters" />
+      <module name="nft-turbo-job" options="-parameters" />
+      <module name="nft-turbo-limiter" options="-parameters" />
+      <module name="nft-turbo-lock" options="-parameters" />
+      <module name="nft-turbo-mq" options="-parameters" />
+      <module name="nft-turbo-notice" options="-parameters" />
+      <module name="nft-turbo-order" options="-parameters" />
+      <module name="nft-turbo-order-client" options="-parameters" />
+      <module name="nft-turbo-pay" options="-parameters" />
+      <module name="nft-turbo-prometheus" options="-parameters" />
+      <module name="nft-turbo-rpc" options="-parameters" />
+      <module name="nft-turbo-sa-token" options="-parameters" />
+      <module name="nft-turbo-seata" options="-parameters" />
+      <module name="nft-turbo-skywalking" options="-parameters" />
+      <module name="nft-turbo-sms" options="-parameters" />
+      <module name="nft-turbo-tcc" options="-parameters" />
+      <module name="nft-turbo-trade" options="-parameters" />
+      <module name="nft-turbo-user" options="-parameters" />
+      <module name="nft-turbo-web" options="-parameters" />
+    </option>
+  </component>
+</project>
